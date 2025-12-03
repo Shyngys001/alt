@@ -16,12 +16,12 @@
     :root {
       --primary: #005d1e;
       --primary-light: #005d1d17;
-      --primary-dark: #B8860B;
+      --primary-dark: #0bb825;
       --secondary: #8B4513;
       --accent: #A0522D;
       --text: #2C1810;
       --text-light: #7A5C3C;
-      --bg: #005d1d17;
+      --bg: #005d1d05;
       --bg-light: #FFF9F5;
       --bg-card: #ffffff;
       --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
@@ -977,7 +977,7 @@
     /* === CONFIG & HELPERS === */
 
     const API_BASE =
-      'https://script.google.com/macros/s/AKfycbwEIK4ZJTWaciy5glvItdNhG4zWciwTJNIlwKuIPZ3RrilSt8Bzs5AULwhfR8UpxMcn0g/exec';
+      'https://script.google.com/macros/s/AKfycbxKrU61Fj3tB5Z78jWkOMnLgZ4mwoEbxNA5H2vN3-2FxDctai5ce8N2VHzDspB4ZElh6A/exec';
 
     const $  = (s) => document.querySelector(s);
     const $$ = (s) => document.querySelectorAll(s);
@@ -1037,6 +1037,7 @@
 
       return '';
     }
+
 
     function formatMoney(x) {
       x = Number(x || 0);

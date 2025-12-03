@@ -803,7 +803,7 @@
 
   <script>
     /* URL Apps Script */
-    const API_BASE = 'https://script.google.com/macros/s/AKfycbwEIK4ZJTWaciy5glvItdNhG4zWciwTJNIlwKuIPZ3RrilSt8Bzs5AULwhfR8UpxMcn0g/exec';
+    const API_BASE = 'https://script.google.com/macros/s/AKfycbxKrU61Fj3tB5Z78jWkOMnLgZ4mwoEbxNA5H2vN3-2FxDctai5ce8N2VHzDspB4ZElh6A/exec';
 
     const $ = s => document.querySelector(s);
     const $$ = s => document.querySelectorAll(s);
@@ -829,70 +829,41 @@
     }
 
     function normalizePhotoUrl(url) {
-  if (!url) return '';
-  
-  url = String(url).trim();
-  if (!url) return '';
-  
-  // 1) Если это data:image — возвращаем как есть
-  if (url.startsWith('data:image')) return url;
-  
-  // 2) Убираем формулы Google Sheets
-  if (url.startsWith('=IMAGE("')) {
-    url = url.replace(/^=IMAGE\("(.*?)"\)$/i, '$1');
-    url = url.replace(/^["']+|["']+$/g, ''); // Убираем кавычки
-  }
-  
-  // 3) Извлечение ID из различных форматов Google Drive
-  let fileId = '';
-  
-  // Формат: https://drive.usercontent.google.com/download?id=ID...
-  let match = url.match(/drive\.usercontent\.google\.com\/download\?id=([a-zA-Z0-9_-]+)/);
-  if (match) {
-    fileId = match[1];
-  }
-  
-  // Формат: https://drive.google.com/file/d/ID/view
-  if (!fileId) {
-    match = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
-    if (match) fileId = match[1];
-  }
-  
-  // Формат: https://drive.google.com/open?id=ID
-  if (!fileId) {
-    match = url.match(/drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/);
-    if (match) fileId = match[1];
-  }
-  
-  // Формат: https://drive.google.com/uc?id=ID
-  if (!fileId) {
-    match = url.match(/drive\.google\.com\/uc\?id=([a-zA-Z0-9_-]+)/);
-    if (match) fileId = match[1];
-  }
-  
-  // Формат: Просто ID (без полного URL)
-  if (!fileId && /^[a-zA-Z0-9_-]{25,}$/.test(url)) {
-    fileId = url;
-  }
-  
-  // 4) Если нашли ID — формируем правильную ссылку для просмотра
-  if (fileId) {
-    return `https://lh3.googleusercontent.com/d/${fileId}=s1000?authuser=0`;
-  }
-  
-  // 5) Проверяем, является ли ссылка прямым изображением
-  if (/^https?:\/\/.*\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?.*)?$/i.test(url)) {
-    return url;
-  }
-  
-  // 6) Для других внешних ссылок — возвращаем как есть
-  if (url.startsWith('http')) {
-    return url;
-  }
-  
-  // 7) Возвращаем пустую строку, если не распознали
-  return '';
-}
+      if (!url) return '';
+      url = String(url).trim();
+      if (!url) return '';
+
+      if (url.startsWith('data:image')) return url;
+
+      if (url.startsWith('=IMAGE("')) {
+        url = url.replace(/^=IMAGE\("(.*?)"\)$/i, '$1');
+        url = url.replace(/^["']+|["']+$/g, '');
+      }
+
+      let fileId = '';
+      let match = url.match(/drive\.usercontent\.google\.com\/download\?id=([a-zA-Z0-9_-]+)/);
+      if (match) fileId = match[1];
+
+      if (!fileId) match = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+      if (match && !fileId) fileId = match[1];
+
+      if (!fileId) match = url.match(/drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/);
+      if (match && !fileId) fileId = match[1];
+
+      if (!fileId) match = url.match(/drive\.google\.com\/uc\?id=([a-zA-Z0-9_-]+)/);
+      if (match && !fileId) fileId = match[1];
+
+      if (!fileId && /^[a-zA-Z0-9_-]{25,}$/.test(url)) fileId = url;
+
+      if (fileId) return `https://lh3.googleusercontent.com/d/${fileId}=s1000?authuser=0`;
+
+      if (/^https?:\/\/.*\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?.*)?$/i.test(url)) return url;
+
+      if (url.startsWith('http')) return url;
+
+      return '';
+    }
+
     function toast(node,msg,ok=true){
       if(!node) return;
       node.className = 'toast ' + (ok?'toast-success':'toast-error');
